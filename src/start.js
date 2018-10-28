@@ -26,11 +26,6 @@ export const start = async () => {
     const Comments = db.collection('comments')
 
     const typeDefs = [`
-      type Query {
-        post(_id: String): Post
-        posts: [Post]
-        comment(_id: String): Comment
-      }
 
       type Post {
         _id: String
@@ -46,6 +41,12 @@ export const start = async () => {
         post: Post
       }
 
+      type Query {
+        post(_id: String): Post
+        posts: [Post]
+        comment(_id: String): Comment
+      }
+
       type Mutation {
         createPost(title: String, content: String): Post
         createComment(postId: String, content: String): Comment
@@ -58,6 +59,16 @@ export const start = async () => {
     `];
 
     const resolvers = {
+      Post: {
+        comments: async ({_id}) => {
+          return (await Comments.find({postId: _id}).toArray()).map(prepare)
+        }
+      },
+      Comment: {
+        post: async ({postId}) => {
+          return prepare(await Posts.findOne(ObjectId(postId)))
+        }
+      },
       Query: {
         post: async (root, {_id}) => {
           return prepare(await Posts.findOne(ObjectId(_id)))
@@ -68,16 +79,6 @@ export const start = async () => {
         comment: async (root, {_id}) => {
           return prepare(await Comments.findOne(ObjectId(_id)))
         },
-      },
-      Post: {
-        comments: async ({_id}) => {
-          return (await Comments.find({postId: _id}).toArray()).map(prepare)
-        }
-      },
-      Comment: {
-        post: async ({postId}) => {
-          return prepare(await Posts.findOne(ObjectId(postId)))
-        }
       },
       Mutation: {
         createPost: async (root, args, context, info) => {
