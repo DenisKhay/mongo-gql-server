@@ -1,29 +1,32 @@
-import {MongoClient, ObjectId} from 'mongodb'
-import express from 'express'
-import bodyParser from 'body-parser'
-import {graphqlExpress, graphiqlExpress} from 'graphql-server-express'
-import {makeExecutableSchema} from 'graphql-tools'
-import cors from 'cors'
-import {prepare} from "../utill/index"
+const mongo = require('mongodb');
+const MongoClient = mongo.MongoClient;
+const ObjectId = mongo.objectId;
+const express = require('express');
+const bodyParser = require('body-parser');
+const graphQLServerExpress = require('graphql-server-express');
+const graphiqlExpress = graphQLServerExpress.graphiqlExpress;
+const graphqlExpress = graphQLServerExpress.graphqlExpress;
+const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
+const cors = require('cors');
+const prepare = require('../utill').prepare;
+
+const app = express();
+
+app.use(cors());
+
+const homePath = '/graphiql';
+const URL = 'http://localhost';
+const PORT = 3001;
+const MONGO_URL = 'mongodb://localhost:27017/blog';
 
 
-const app = express()
 
-app.use(cors())
-
-const homePath = '/graphiql'
-const URL = 'http://localhost'
-const PORT = 3001
-const MONGO_URL = 'mongodb://localhost:27017/blog'
-
-
-
-export const start = async () => {
+module.exports = async () => {
   try {
-    const db = await MongoClient.connect(MONGO_URL)
+    const db = await MongoClient.connect(MONGO_URL);
 
-    const Posts = db.collection('posts')
-    const Comments = db.collection('comments')
+    const Posts = db.collection('posts');
+    const Comments = db.collection('comments');
 
     const typeDefs = [`
 
@@ -82,20 +85,20 @@ export const start = async () => {
       },
       Mutation: {
         createPost: async (root, args, context, info) => {
-          const res = await Posts.insertOne(args)
+          const res = await Posts.insertOne(args);
           return prepare(res.ops[0])  // https://mongodb.github.io/node-mongodb-native/3.1/api/Collection.html#~insertOneWriteOpResult
         },
         createComment: async (root, args) => {
-          const res = await Comments.insert(args)
+          const res = await Comments.insert(args);
           return prepare(await Comments.findOne({_id: res.insertedIds[1]}))
         },
       },
-    }
+    };
 
     const schema = makeExecutableSchema({
       typeDefs,
       resolvers
-    })
+    });
 
 
     app.use('/graphql', bodyParser.json(), graphqlExpress({schema}))
@@ -103,7 +106,7 @@ export const start = async () => {
 
     app.use(homePath, graphiqlExpress({
       endpointURL: '/graphql'
-    }))
+    }));
 
     app.listen(PORT, () => {
       console.log(`Visit ${URL}:${PORT}${homePath}`)
@@ -113,4 +116,4 @@ export const start = async () => {
     console.log(e)
   }
 
-}
+};

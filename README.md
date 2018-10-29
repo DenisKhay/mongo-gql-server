@@ -23,7 +23,7 @@ And then run some of npm scripts you  will discover/like and get some fun
 Want to connect mongo-express?  
 
 ```bash
-docker run -p 8081:8081 --link mongo-eva:mongo --name mongo-express-eva -d mongo-express
+docker run -p 8081:8081 --link mongo-eva:mongo --name mongo-express-eva -d mongo-express --restart always
 ```
 As you can see currently here is no any auth to db or to mongo-exress app. Be careful, it is just kinda playground yet.
 
