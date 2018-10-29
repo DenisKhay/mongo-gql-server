@@ -15,7 +15,7 @@ GraphQL
 Now if you want to play with what is it at the moment - Just run something like this
 
 ```bash
-docker run -p 27017:27017 -v $(pwd)/data:/data/db --name mongo-eva --restart=always -d mongo:latest  
+docker run -p 27017:27017 -v $(pwd)/data:/data/db --name mongo-eva -d mongo:latest --restart always  
 ```
 
 And then run some of npm scripts you  will discover/like and get some fun   

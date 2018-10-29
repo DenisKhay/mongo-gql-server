@@ -59,6 +59,7 @@ module.exports = async () => {
         query: Query
         mutation: Mutation
       }
+      
     `];
 
     const resolvers = {
