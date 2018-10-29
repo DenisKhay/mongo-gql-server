@@ -77,7 +77,9 @@ module.exports = async () => {
           return prepare(await Posts.findOne(ObjectId(_id)))
         },
         posts: async () => {
-          return (await Posts.find({}).toArray()).map(prepare)
+          const posts = await Posts.find({}).toArray();
+
+          return posts.map(prepare)
         },
         comment: async (root, {_id}) => {
           return prepare(await Comments.findOne(ObjectId(_id)))
@@ -89,8 +91,8 @@ module.exports = async () => {
           return prepare(res.ops[0])  // https://mongodb.github.io/node-mongodb-native/3.1/api/Collection.html#~insertOneWriteOpResult
         },
         createComment: async (root, args) => {
-          const res = await Comments.insert(args);
-          return prepare(await Comments.findOne({_id: res.insertedIds[1]}))
+          const res = await Comments.insertOne(args);
+          return prepare(res.ops[0])
         },
       },
     };
@@ -101,7 +103,7 @@ module.exports = async () => {
     });
 
 
-    app.use('/graphql', bodyParser.json(), graphqlExpress({schema}))
+    app.use('/graphql', bodyParser.json(), graphqlExpress({schema}));
 
 
     app.use(homePath, graphiqlExpress({
