@@ -1,14 +1,10 @@
-const mongo = require('mongodb');
-const MongoClient = mongo.MongoClient;
-const ObjectId = mongo.objectId;
+const { MongoClient, ObjectId } = require('mongodb');
 const express = require('express');
 const bodyParser = require('body-parser');
-const graphQLServerExpress = require('graphql-server-express');
-const graphiqlExpress = graphQLServerExpress.graphiqlExpress;
-const graphqlExpress = graphQLServerExpress.graphqlExpress;
-const makeExecutableSchema = require('graphql-tools').makeExecutableSchema;
+const { graphiqlExpress, graphqlExpress } = require('graphql-server-express');
+const { makeExecutableSchema } = require('graphql-tools');
 const cors = require('cors');
-const prepare = require('../utill').prepare;
+const { prepare } = require('../util');
 
 const app = express();
 
