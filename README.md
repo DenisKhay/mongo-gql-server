@@ -15,7 +15,7 @@ GraphQL
 Now if you want to play with what is it at the moment - Just run something like this
 
 ```bash
-docker run -p 27017:27017 -v $(pwd)/data:/data/db --name mongo-eva -d mongo:latest --restart always  
+docker run -p 27017:27017 -v $(pwd)/data:/data/db --name mongo-eva --restart always -d mongo:latest  
 ```
 
 And then run some of npm scripts you  will discover/like and get some fun   
@@ -23,7 +23,7 @@ And then run some of npm scripts you  will discover/like and get some fun
 Want to connect mongo-express?  
 
 ```bash
-docker run -p 8081:8081 --link mongo-eva:mongo --name mongo-express-eva -d mongo-express --restart always
+docker run -p 8081:8081 --link mongo-eva:mongo --name mongo-express-eva --restart always -d mongo-express
 ```
 As you can see currently here is no any auth to db or to mongo-exress app. Be careful, it is just kinda playground yet.
 
